@@ -1,0 +1,293 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Seguiré Programando · Franco Sandes</title>
+<meta name="description" content="Seguiré Programando, una canción creada por Franco Sandes.">
+<meta property="og:title" content="Seguiré Programando">
+<meta property="og:description" content="Una canción creada por Franco Sandes. Dale play.">
+<meta property="og:image" content="poster.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  /* Layout: una sola columna; portada-computadora arriba, debajo likes y comentarios */
+  :root{
+    --bg:#0a0e17; --panel:#121a29; --line:#24304a; --fg:#eef2fa; --muted:#8c99b3;
+    --blue:#1e9bff; --yellow:#ffde3c; --red:#ff6b6b;
+    --display:"Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+    --mono:"JetBrains Mono", ui-monospace, Consolas, monospace;
+    color-scheme: dark;
+  }
+  *{box-sizing:border-box}
+  [hidden]{display:none!important}
+  html,body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--display);}
+  body{background:
+      linear-gradient(115deg, transparent 0 62%, rgba(30,155,255,.10) 62% 66%, transparent 66% 69%, rgba(255,222,60,.08) 69% 71%, transparent 71%),
+      var(--bg);}
+  .wrap{max-width:960px;margin:0 auto;padding:28px 16px 64px;display:flex;flex-direction:column;gap:22px}
+  header{display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:8px}
+  h1{margin:0;font-weight:800;font-size:clamp(30px,6vw,54px);letter-spacing:-1px;line-height:1}
+  h1 span{color:var(--yellow)}
+  .by{font-family:var(--mono);color:var(--muted);font-size:14px}
+  .by b{color:var(--fg)}
+  .stripe{height:6px;width:150px;border-radius:3px;background:linear-gradient(90deg,var(--yellow) 0 50%,var(--blue) 50%)}
+
+  /* portada: una laptop dibujada con CSS */
+  .stage{position:relative}
+  .laptop{position:relative;margin:0 auto;max-width:900px;padding:0 4%}
+  .stage{overflow-x:clip}
+  .screen{position:relative;background:#05080f;border:14px solid #1b2333;border-bottom-width:18px;border-radius:18px 18px 6px 6px;aspect-ratio:16/9;overflow:hidden;box-shadow:0 30px 60px rgba(0,0,0,.5)}
+  .base{height:22px;margin:0 -5%;background:linear-gradient(#2a3346,#151b27);border-radius:0 0 22px 22px;position:relative}
+  .base::after{content:"";position:absolute;left:42%;right:42%;top:0;height:7px;background:#0d121c;border-radius:0 0 8px 8px}
+  .cover{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;cursor:pointer;border:0;padding:0;width:100%;color:var(--fg);
+    background:
+      radial-gradient(ellipse at 50% 120%, rgba(30,155,255,.25), transparent 60%),
+      #070b14;font-family:var(--display)}
+  .code{position:absolute;inset:0;padding:18px 22px;font-family:var(--mono);font-size:clamp(9px,1.3vw,14px);line-height:1.6;color:#1f2c45;text-align:left;white-space:pre;overflow:hidden;pointer-events:none}
+  .code .k{color:#3d5f96}.code .s{color:#6b5f1e}
+  .crack{position:absolute;inset:0;pointer-events:none;opacity:.35}
+  .cover .t{position:relative;font-weight:800;font-size:clamp(26px,5.5vw,64px);letter-spacing:-1px;text-shadow:0 4px 30px rgba(0,0,0,.8)}
+  .cover .t em{font-style:normal;color:var(--yellow)}
+  .play{position:relative;width:clamp(70px,11vw,110px);aspect-ratio:1;border-radius:50%;background:var(--yellow);display:grid;place-items:center;box-shadow:0 0 0 10px rgba(255,222,60,.15),0 10px 40px rgba(0,0,0,.6);transition:transform .15s}
+  .play::before{content:"";margin-left:8%;border-left:clamp(22px,3.4vw,34px) solid #111;border-top:clamp(14px,2.1vw,21px) solid transparent;border-bottom:clamp(14px,2.1vw,21px) solid transparent}
+  .cover:hover .play,.cover:focus-visible .play{transform:scale(1.08)}
+  .cover:focus-visible{outline:3px solid var(--yellow);outline-offset:-6px}
+  .hint{position:relative;font-family:var(--mono);color:var(--muted);font-size:clamp(11px,1.4vw,15px)}
+  video{position:absolute;inset:0;width:100%;height:100%;background:#000}
+
+  /* reacciones */
+  .bar{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+  .btn{font-family:var(--display);font-size:17px;font-weight:600;border:2px solid var(--line);background:var(--panel);color:var(--fg);border-radius:999px;padding:10px 18px;cursor:pointer;display:inline-flex;gap:8px;align-items:center}
+  .btn:hover{border-color:var(--blue)}
+  .btn.on.like{background:var(--blue);border-color:var(--blue)}
+  .btn.on.dislike{background:var(--red);border-color:var(--red);color:#111}
+  .btn:disabled{opacity:.5;cursor:not-allowed}
+  .count{font-family:var(--mono)}
+  .who{margin-left:auto;display:flex;gap:10px;align-items:center;font-family:var(--mono);font-size:14px;color:var(--muted)}
+  .who img{width:30px;height:30px;border-radius:50%}
+  .google{background:#fff;color:#1f1f1f;border-color:#fff}
+  .google:hover{border-color:var(--yellow)}
+  .link{background:none;border:0;color:var(--muted);text-decoration:underline;cursor:pointer;font-family:var(--mono);font-size:13px}
+
+  /* comentarios */
+  .panel{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:18px;display:flex;flex-direction:column;gap:14px}
+  .panel h2{margin:0;font-size:22px}
+  .panel h2 span{color:var(--muted);font-family:var(--mono);font-size:15px;font-weight:400}
+  form{display:flex;flex-direction:column;gap:10px}
+  textarea{width:100%;min-height:80px;resize:vertical;background:#0b111d;color:var(--fg);border:2px solid var(--line);border-radius:12px;padding:12px;font:16px/1.4 var(--display)}
+  textarea:focus{outline:none;border-color:var(--blue)}
+  .emojis{display:flex;flex-wrap:wrap;gap:6px}
+  .emojis button{font-size:22px;background:#0b111d;border:1px solid var(--line);border-radius:10px;padding:4px 8px;cursor:pointer}
+  .emojis button:hover{border-color:var(--yellow)}
+  .send{align-self:flex-end;background:var(--yellow);color:#111;border:0}
+  .list{display:flex;flex-direction:column;gap:12px;margin:0;padding:0;list-style:none}
+  .c{display:grid;grid-template-columns:38px 1fr;gap:10px;align-items:start}
+  .c img,.c .av{width:38px;height:38px;border-radius:50%;background:var(--line);display:grid;place-items:center;font-weight:800}
+  .c .meta{font-family:var(--mono);font-size:13px;color:var(--muted);display:flex;gap:10px;flex-wrap:wrap}
+  .c .meta b{color:var(--fg)}
+  .c p{margin:4px 0 0;white-space:pre-wrap;word-break:break-word;font-size:16px;line-height:1.45}
+  .empty,.note{color:var(--muted);font-family:var(--mono);font-size:14px;margin:0}
+  .note.err{color:var(--red)}
+  footer{color:var(--muted);font-family:var(--mono);font-size:13px;text-align:center}
+  @media (prefers-reduced-motion:reduce){.play{transition:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div>
+      <div class="stripe"></div>
+      <h1>Seguiré <span>Programando</span></h1>
+    </div>
+    <div class="by">creada por <b>Franco Sandes</b></div>
+  </header>
+
+  <div class="stage">
+    <div class="laptop">
+      <div class="screen" id="screen">
+        <button class="cover" id="cover" aria-label="Reproducir Seguiré Programando">
+          <div class="code" aria-hidden="true"><span class="k">def</span> seguir_programando():
+    <span class="k">while</span> True:
+        escribir_codigo()
+        <span class="k">if</span> error:
+            arreglar(error)   <span class="s"># error tras error</span>
+
+dias = [<span class="s">"lunes"</span>, <span class="s">"martes"</span>, <span class="s">"viernes"</span>]  <span class="s"># informatica!</span>
+<span class="k">for</span> dia <span class="k">in</span> dias:
+    soportar(cosa_tras_cosa)
+    seguir_programando()
+
+<span class="k">if</span> se_cuelga_la_compu():
+    seguir_intentando()
+rendirse = False
+print(<span class="s">"seguire programando"</span>)</div>
+          <svg class="crack" viewBox="0 0 160 90" preserveAspectRatio="none" aria-hidden="true">
+            <path d="M118 8 L104 30 L112 36 L96 58 L102 62 L88 88" fill="none" stroke="#9fb8e0" stroke-width=".5"/>
+            <path d="M104 30 L124 40 L140 38" fill="none" stroke="#9fb8e0" stroke-width=".4"/>
+            <path d="M96 58 L76 64 L66 80" fill="none" stroke="#9fb8e0" stroke-width=".35"/>
+          </svg>
+          <div class="t">Seguiré <em>Programando</em></div>
+          <div class="play"></div>
+          <div class="hint">tocá para escuchar · 4:13</div>
+        </button>
+        <video id="vid" src="video.mp4" poster="poster.jpg" controls playsinline preload="metadata" hidden></video>
+      </div>
+      <div class="base"></div>
+    </div>
+  </div>
+
+  <div class="bar">
+    <button class="btn like" id="likeBtn" aria-pressed="false">👍 <span class="count" id="likes">0</span></button>
+    <button class="btn dislike" id="dislikeBtn" aria-pressed="false">👎 <span class="count" id="dislikes">0</span></button>
+    <div class="who" id="who">
+      <button class="btn google" id="loginBtn">
+        <svg width="18" height="18" viewBox="0 0 48 48" aria-hidden="true"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.4-.4-3.5z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-7.9l-6.5 5C9.5 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C37 39.2 44 34 44 24c0-1.3-.1-2.4-.4-3.5z"/></svg>
+        Iniciar sesión con Google
+      </button>
+    </div>
+  </div>
+  <p class="note" id="status"></p>
+
+  <section class="panel" aria-labelledby="ch">
+    <h2 id="ch">Comentarios <span id="ccount"></span></h2>
+    <form id="form" hidden>
+      <label for="text" class="note">Comentás como <b id="meName"></b></label>
+      <textarea id="text" maxlength="500" placeholder="¿Qué te pareció la canción?"></textarea>
+      <div class="emojis" id="emojis"></div>
+      <button class="btn send" type="submit" id="sendBtn">Comentar</button>
+    </form>
+    <p class="note" id="loginHint">Iniciá sesión con Google para dar like y comentar.</p>
+    <ul class="list" id="list"><li class="empty">Todavía no hay comentarios. ¡Sé el primero!</li></ul>
+  </section>
+
+  <footer>Seguiré Programando · Franco Sandes</footer>
+</div>
+
+<script type="module">
+// ======== PEGÁ ACÁ LA CONFIGURACIÓN DE TU PROYECTO DE FIREBASE ========
+const firebaseConfig = {
+  apiKey: "PEGAR_AQUI",
+  authDomain: "PEGAR_AQUI",
+  projectId: "PEGAR_AQUI",
+  appId: "PEGAR_AQUI"
+};
+// =====================================================================
+
+const $ = id => document.getElementById(id);
+
+// Portada -> video
+$("cover").addEventListener("click", () => {
+  $("cover").hidden = true;
+  const v = $("vid"); v.hidden = false; v.play().catch(() => {});
+});
+
+// Emojis rápidos
+const EM = ["🔥","😂","😍","👏","💻","🎵","🤘","😎","💯","🥲","🤖","⭐"];
+for (const e of EM) {
+  const b = document.createElement("button"); b.type = "button"; b.textContent = e; b.setAttribute("aria-label", "Agregar " + e);
+  b.onclick = () => { const t = $("text"); const p = t.selectionStart ?? t.value.length; t.value = t.value.slice(0,p) + e + t.value.slice(p); t.focus(); t.selectionStart = t.selectionEnd = p + e.length; };
+  $("emojis").appendChild(b);
+}
+
+const status = (msg, err) => { $("status").textContent = msg || ""; $("status").className = "note" + (err ? " err" : ""); };
+
+if (firebaseConfig.apiKey === "PEGAR_AQUI") {
+  status("Los likes y comentarios todavía no están activados (falta la configuración de Firebase).");
+  $("likeBtn").disabled = $("dislikeBtn").disabled = $("loginBtn").disabled = true;
+} else {
+  start().catch(e => status("No se pudo conectar: " + e.message, true));
+}
+
+async function start() {
+  const V = "10.12.2";
+  const { initializeApp } = await import(`https://www.gstatic.com/firebasejs/${V}/firebase-app.js`);
+  const A = await import(`https://www.gstatic.com/firebasejs/${V}/firebase-auth.js`);
+  const F = await import(`https://www.gstatic.com/firebasejs/${V}/firebase-firestore.js`);
+  const app = initializeApp(firebaseConfig);
+  const auth = A.getAuth(app); const db = F.getFirestore(app);
+  let me = null, myVote = 0;
+
+  // Likes / dislikes en vivo
+  F.onSnapshot(F.collection(db, "votes"), snap => {
+    let l = 0, d = 0; myVote = 0;
+    snap.forEach(doc => { const v = doc.data().v; if (v === 1) l++; else if (v === -1) d++; if (me && doc.id === me.uid) myVote = v; });
+    $("likes").textContent = l; $("dislikes").textContent = d;
+    paintVote();
+  });
+  function paintVote() {
+    $("likeBtn").classList.toggle("on", myVote === 1); $("likeBtn").setAttribute("aria-pressed", myVote === 1);
+    $("dislikeBtn").classList.toggle("on", myVote === -1); $("dislikeBtn").setAttribute("aria-pressed", myVote === -1);
+  }
+  async function vote(v) {
+    if (!me) return login();
+    const ref = F.doc(db, "votes", me.uid);
+    try {
+      if (myVote === v) await F.deleteDoc(ref);
+      else await F.setDoc(ref, { v, name: me.displayName || "Alguien", ts: F.serverTimestamp() });
+    } catch (e) { status("No se pudo guardar tu voto. Probá de nuevo.", true); }
+  }
+  $("likeBtn").onclick = () => vote(1);
+  $("dislikeBtn").onclick = () => vote(-1);
+
+  // Comentarios en vivo
+  const q = F.query(F.collection(db, "comments"), F.orderBy("ts", "desc"), F.limit(200));
+  F.onSnapshot(q, snap => {
+    const ul = $("list"); ul.innerHTML = "";
+    $("ccount").textContent = snap.size ? "· " + snap.size : "";
+    if (snap.empty) { const li = document.createElement("li"); li.className = "empty"; li.textContent = "Todavía no hay comentarios. ¡Sé el primero!"; ul.appendChild(li); return; }
+    snap.forEach(d => {
+      const c = d.data(); const li = document.createElement("li"); li.className = "c";
+      let av;
+      if (c.photo) { av = document.createElement("img"); av.src = c.photo; av.alt = ""; av.referrerPolicy = "no-referrer"; }
+      else { av = document.createElement("div"); av.className = "av"; av.textContent = (c.name || "?")[0].toUpperCase(); }
+      const body = document.createElement("div");
+      const meta = document.createElement("div"); meta.className = "meta";
+      const n = document.createElement("b"); n.textContent = c.name || "Alguien"; meta.appendChild(n);
+      const when = document.createElement("span"); when.textContent = c.ts ? c.ts.toDate().toLocaleString("es-AR", { dateStyle: "short", timeStyle: "short" }) : "recién"; meta.appendChild(when);
+      if (me && c.uid === me.uid) { const del = document.createElement("button"); del.className = "link"; del.textContent = "borrar"; del.onclick = () => F.deleteDoc(F.doc(db, "comments", d.id)).catch(() => status("No se pudo borrar.", true)); meta.appendChild(del); }
+      const p = document.createElement("p"); p.textContent = c.text;
+      body.append(meta, p); li.append(av, body); ul.appendChild(li);
+    });
+  }, () => status("No se pudieron cargar los comentarios.", true));
+
+  $("form").addEventListener("submit", async e => {
+    e.preventDefault();
+    const text = $("text").value.trim(); if (!text || !me) return;
+    $("sendBtn").disabled = true;
+    try {
+      await F.addDoc(F.collection(db, "comments"), { uid: me.uid, name: me.displayName || "Alguien", photo: me.photoURL || "", text, ts: F.serverTimestamp() });
+      $("text").value = ""; status("");
+    } catch (err) { status("No se pudo publicar el comentario. Probá de nuevo.", true); }
+    $("sendBtn").disabled = false;
+  });
+
+  // Sesión con Google
+  const provider = new A.GoogleAuthProvider();
+  async function login() {
+    try { await A.signInWithPopup(auth, provider); }
+    catch (e) { if (e.code !== "auth/popup-closed-by-user") status("No se pudo iniciar sesión. Probá de nuevo.", true); }
+  }
+  A.onAuthStateChanged(auth, u => {
+    me = u; const who = $("who");
+    if (u) {
+      who.innerHTML = "";
+      if (u.photoURL) { const i = document.createElement("img"); i.src = u.photoURL; i.alt = ""; i.referrerPolicy = "no-referrer"; who.appendChild(i); }
+      const n = document.createElement("span"); n.textContent = u.displayName || u.email; who.appendChild(n);
+      const out = document.createElement("button"); out.className = "link"; out.textContent = "salir"; out.onclick = () => A.signOut(auth); who.appendChild(out);
+      $("form").hidden = false; $("loginHint").hidden = true; $("meName").textContent = u.displayName || u.email;
+    } else {
+      who.innerHTML = ""; const b = $("loginBtnTpl") || null;
+      who.appendChild(loginButton());
+      $("form").hidden = true; $("loginHint").hidden = false;
+    }
+    paintVote();
+  });
+  function loginButton() {
+    const b = document.createElement("button"); b.className = "btn google"; b.textContent = "Iniciar sesión con Google"; b.onclick = login; return b;
+  }
+  $("loginBtn").onclick = login;
+}
+</script>
+</body>
+</html>
