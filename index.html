@@ -89,6 +89,9 @@
   .c p{margin:4px 0 0;white-space:pre-wrap;word-break:break-word;font-size:16px;line-height:1.45}
   .empty,.note{color:var(--muted);font-family:var(--mono);font-size:14px;margin:0}
   .note.err{color:var(--red)}
+  .soon{display:flex;gap:12px;align-items:center;background:rgba(255,222,60,.12);border:2px dashed var(--yellow);border-radius:14px;padding:14px 16px;color:var(--fg);font-size:17px}
+  .soon b{color:var(--yellow)}
+  .locked{opacity:.45;pointer-events:none;filter:grayscale(.4)}
   footer{color:var(--muted);font-family:var(--mono);font-size:13px;text-align:center}
   @media (prefers-reduced-motion:reduce){.play{transition:none}}
 </style>
@@ -129,7 +132,7 @@ print(<span class="s">"seguire programando"</span>)</div>
           </svg>
           <div class="t">Seguiré <em>Programando</em></div>
           <div class="play"></div>
-          <div class="hint">tocá para escuchar · 4:13</div>
+          <div class="hint">tocá para escuchar · 4:39</div>
         </button>
         <video id="vid" src="video.mp4" poster="poster.jpg" controls playsinline preload="metadata" hidden></video>
       </div>
@@ -137,6 +140,8 @@ print(<span class="s">"seguire programando"</span>)</div>
     </div>
   </div>
 
+  <div class="soon" role="status">🚧 <span><b>Todavía no se puede usar.</b> Los likes, dislikes y comentarios se van a activar muy pronto.</span></div>
+  <div class="locked" aria-hidden="true">
   <div class="bar">
     <button class="btn like" id="likeBtn" aria-pressed="false">👍 <span class="count" id="likes">0</span></button>
     <button class="btn dislike" id="dislikeBtn" aria-pressed="false">👎 <span class="count" id="dislikes">0</span></button>
@@ -161,6 +166,7 @@ print(<span class="s">"seguire programando"</span>)</div>
     <ul class="list" id="list"><li class="empty">Todavía no hay comentarios. ¡Sé el primero!</li></ul>
   </section>
 
+  </div>
   <footer>Seguiré Programando · Franco Sandes</footer>
 </div>
 
@@ -193,7 +199,7 @@ for (const e of EM) {
 const status = (msg, err) => { $("status").textContent = msg || ""; $("status").className = "note" + (err ? " err" : ""); };
 
 if (firebaseConfig.apiKey === "PEGAR_AQUI") {
-  status("Los likes y comentarios todavía no están activados (falta la configuración de Firebase).");
+  
   $("likeBtn").disabled = $("dislikeBtn").disabled = $("loginBtn").disabled = true;
 } else {
   start().catch(e => status("No se pudo conectar: " + e.message, true));
