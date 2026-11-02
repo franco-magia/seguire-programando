@@ -9,13 +9,13 @@
 <meta property="og:description" content="Una canción creada por Franco Sandes. Dale play.">
 <meta property="og:image" content="poster.jpg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=JetBrains+Mono:wght@400;600&family=Noto+Sans+Arabic:wght@600;800&family=Noto+Sans+Bengali:wght@600;800&family=Noto+Sans+Devanagari:wght@600;800&display=swap" rel="stylesheet">
 <style>
   /* Layout: una sola columna; portada-computadora arriba, debajo likes y comentarios */
   :root{
     --bg:#0a0e17; --panel:#121a29; --line:#24304a; --fg:#eef2fa; --muted:#8c99b3;
     --blue:#1e9bff; --yellow:#ffde3c; --red:#ff6b6b;
-    --display:"Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+    --display:"Bricolage Grotesque", "Noto Sans Devanagari", "Noto Sans Bengali", "Noto Sans Arabic", "Segoe UI", system-ui, sans-serif;
     --mono:"JetBrains Mono", ui-monospace, Consolas, monospace;
     color-scheme: dark;
   }
@@ -44,7 +44,7 @@
     background:
       radial-gradient(ellipse at 50% 120%, rgba(30,155,255,.25), transparent 60%),
       #070b14;font-family:var(--display)}
-  .code{position:absolute;inset:0;padding:18px 22px;font-family:var(--mono);font-size:clamp(9px,1.3vw,14px);line-height:1.6;color:#1f2c45;text-align:left;white-space:pre;overflow:hidden;pointer-events:none}
+  .code{direction:ltr;position:absolute;inset:0;padding:18px 22px;font-family:var(--mono);font-size:clamp(9px,1.3vw,14px);line-height:1.6;color:#1f2c45;text-align:left;white-space:pre;overflow:hidden;pointer-events:none}
   .code .k{color:#3d5f96}.code .s{color:#6b5f1e}
   .crack{position:absolute;inset:0;pointer-events:none;opacity:.35}
   .cover .t{position:relative;font-weight:800;font-size:clamp(26px,5.5vw,64px);letter-spacing:-1px;text-shadow:0 4px 30px rgba(0,0,0,.8)}
@@ -92,6 +92,22 @@
   .soon{display:flex;gap:12px;align-items:center;background:rgba(255,222,60,.12);border:2px dashed var(--yellow);border-radius:14px;padding:14px 16px;color:var(--fg);font-size:17px}
   .soon b{color:var(--yellow)}
   .locked{opacity:.45;pointer-events:none;filter:grayscale(.4)}
+  /* idiomas */
+  .langs{position:relative}
+  .langbtn{font-family:var(--display);font-size:16px;font-weight:600;border:2px solid var(--line);background:var(--panel);color:var(--fg);border-radius:999px;padding:8px 16px;cursor:pointer;display:inline-flex;gap:8px;align-items:center}
+  .langbtn:hover,.langbtn[aria-expanded="true"]{border-color:var(--yellow)}
+  .langmenu{max-height:min(70vh,560px);overflow-y:auto;position:absolute;right:0;top:calc(100% + 8px);z-index:20;background:var(--panel);border:2px solid var(--line);border-radius:14px;padding:6px;min-width:270px;box-shadow:0 18px 40px rgba(0,0,0,.5);display:flex;flex-direction:column;gap:2px}
+  .langmenu button{display:flex;align-items:center;gap:10px;width:100%;text-align:left;background:none;border:0;color:var(--fg);font:600 16px var(--display);padding:10px 12px;border-radius:10px;cursor:pointer}
+  .langmenu button:hover,.langmenu button:focus-visible{background:#1b2538;outline:none}
+  .langmenu button[aria-checked="true"]{background:rgba(255,222,60,.12)}
+  .langmenu .fl{font-size:22px}
+  .langmenu button span:nth-child(2){white-space:nowrap}
+  .langmenu .ck{margin-left:auto;color:var(--yellow);font-size:20px;font-weight:800;visibility:hidden}
+  .langmenu button[aria-checked="true"] .ck{visibility:visible}
+  [dir="rtl"] .langmenu{right:auto;left:0}
+  .headr{display:flex;flex-direction:column;align-items:flex-end;gap:10px}
+  .sung{color:var(--muted);font-family:var(--mono);font-size:14px;margin:-8px 0 0;text-align:center}
+  @media (max-width:560px){.headr{align-items:flex-start}.langmenu{right:auto;left:0}}
   footer{color:var(--muted);font-family:var(--mono);font-size:13px;text-align:center}
   @media (prefers-reduced-motion:reduce){.play{transition:none}}
 </style>
@@ -101,16 +117,22 @@
   <header>
     <div>
       <div class="stripe"></div>
-      <h1>Seguiré <span>Programando</span></h1>
+      <h1 id="h1">Seguiré <span>Programando</span></h1>
     </div>
-    <div class="by">creada por <b>Franco Sandes</b></div>
+    <div class="headr">
+      <div class="langs">
+        <button class="langbtn" id="langBtn" aria-haspopup="menu" aria-expanded="false"><span id="langFlag">🇦🇷</span> <span id="langName">Español (Latinoamérica)</span> ▾</button>
+        <div class="langmenu" id="langMenu" role="menu" hidden></div>
+      </div>
+      <div class="by" id="by">creada por <b>Franco Sandes</b></div>
+    </div>
   </header>
 
   <div class="stage">
     <div class="laptop">
       <div class="screen" id="screen">
         <button class="cover" id="cover" aria-label="Reproducir Seguiré Programando">
-          <div class="code" aria-hidden="true"><span class="k">def</span> seguir_programando():
+          <div class="code" id="code" aria-hidden="true"><span class="k">def</span> seguir_programando():
     <span class="k">while</span> True:
         escribir_codigo()
         <span class="k">if</span> error:
@@ -130,17 +152,18 @@ print(<span class="s">"seguire programando"</span>)</div>
             <path d="M104 30 L124 40 L140 38" fill="none" stroke="#9fb8e0" stroke-width=".4"/>
             <path d="M96 58 L76 64 L66 80" fill="none" stroke="#9fb8e0" stroke-width=".35"/>
           </svg>
-          <div class="t">Seguiré <em>Programando</em></div>
+          <div class="t" id="coverT">Seguiré <em>Programando</em></div>
           <div class="play"></div>
-          <div class="hint">tocá para escuchar · 4:39</div>
+          <div class="hint" id="hint">tocá para escuchar · 4:39</div>
         </button>
         <video id="vid" src="video.mp4" poster="poster.jpg" controls playsinline preload="metadata" hidden></video>
       </div>
       <div class="base"></div>
     </div>
   </div>
+  <p class="sung" id="sung" hidden></p>
 
-  <div class="soon" role="status">🚧 <span><b>Todavía no se puede usar.</b> Los likes, dislikes y comentarios se van a activar muy pronto.</span></div>
+  <div class="soon" role="status">🚧 <span id="soon"><b>Todavía no se puede usar.</b> Los likes, dislikes y comentarios se van a activar muy pronto.</span></div>
   <div class="locked" aria-hidden="true">
   <div class="bar">
     <button class="btn like" id="likeBtn" aria-pressed="false">👍 <span class="count" id="likes">0</span></button>
@@ -148,26 +171,26 @@ print(<span class="s">"seguire programando"</span>)</div>
     <div class="who" id="who">
       <button class="btn google" id="loginBtn">
         <svg width="18" height="18" viewBox="0 0 48 48" aria-hidden="true"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.4-.4-3.5z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-7.9l-6.5 5C9.5 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C37 39.2 44 34 44 24c0-1.3-.1-2.4-.4-3.5z"/></svg>
-        Iniciar sesión con Google
+        <span id="loginTxt">Iniciar sesión con Google</span>
       </button>
     </div>
   </div>
   <p class="note" id="status"></p>
 
   <section class="panel" aria-labelledby="ch">
-    <h2 id="ch">Comentarios <span id="ccount"></span></h2>
+    <h2 id="ch"><span id="chTxt" style="color:inherit;font:inherit">Comentarios</span> <span id="ccount"></span></h2>
     <form id="form" hidden>
-      <label for="text" class="note">Comentás como <b id="meName"></b></label>
+      <label for="text" class="note"><span id="asTxt">Comentás como</span> <b id="meName"></b></label>
       <textarea id="text" maxlength="500" placeholder="¿Qué te pareció la canción?"></textarea>
       <div class="emojis" id="emojis"></div>
       <button class="btn send" type="submit" id="sendBtn">Comentar</button>
     </form>
     <p class="note" id="loginHint">Iniciá sesión con Google para dar like y comentar.</p>
-    <ul class="list" id="list"><li class="empty">Todavía no hay comentarios. ¡Sé el primero!</li></ul>
+    <ul class="list" id="list"><li class="empty" id="emptyLi">Todavía no hay comentarios. ¡Sé el primero!</li></ul>
   </section>
 
   </div>
-  <footer>Seguiré Programando · Franco Sandes</footer>
+  <footer id="foot">Seguiré Programando · Franco Sandes</footer>
 </div>
 
 <script type="module">
@@ -181,6 +204,439 @@ const firebaseConfig = {
 // =====================================================================
 
 const $ = id => document.getElementById(id);
+
+// ======== IDIOMAS ========
+const K = s => `<span class="k">${s}</span>`, S = s => `<span class="s">${s}</span>`;
+const LANGS = {
+  "es": { flag: "🇦🇷", name: "Español (Latinoamérica)", html: "es", video: "video.mp4", locale: "es-AR",
+    h1: "Seguiré <span>Programando</span>", by: "creada por <b>Franco Sandes</b>", coverT: "Seguiré <em>Programando</em>",
+    aria: "Reproducir Seguiré Programando", hint: "tocá para escuchar · 4:39", sung: "",
+    soon: "<b>Todavía no se puede usar.</b> Los likes, dislikes y comentarios se van a activar muy pronto.",
+    login: "Iniciar sesión con Google", comments: "Comentarios", as: "Comentás como", ph: "¿Qué te pareció la canción?", send: "Comentar",
+    loginHint: "Iniciá sesión con Google para dar like y comentar.", empty: "Todavía no hay comentarios. ¡Sé el primero!",
+    foot: "Seguiré Programando · Franco Sandes", title: "Seguiré Programando · Franco Sandes",
+    connect: "No se pudo conectar: ", vote: "No se pudo guardar tu voto. Probá de nuevo.", now: "recién", del: "borrar",
+    delErr: "No se pudo borrar.", loadErr: "No se pudieron cargar los comentarios.", post: "No se pudo publicar el comentario. Probá de nuevo.",
+    signin: "No se pudo iniciar sesión. Probá de nuevo.", out: "salir", someone: "Alguien", add: "Agregar ",
+    code: `${K("def")} seguir_programando():
+    ${K("while")} True:
+        escribir_codigo()
+        ${K("if")} error:
+            arreglar(error)   ${S("# error tras error")}
+
+dias = [${S('"lunes"')}, ${S('"martes"')}, ${S('"viernes"')}]  ${S("# informatica!")}
+${K("for")} dia ${K("in")} dias:
+    soportar(cosa_tras_cosa)
+    seguir_programando()
+
+${K("if")} se_cuelga_la_compu():
+    seguir_intentando()
+rendirse = False
+print(${S('"seguire programando"')})` },
+  "es-ES": { flag: "🇪🇸", name: "Español (España)", html: "es-ES", video: "video_es-ES.mp4", locale: "es-ES",
+    h1: "Seguiré <span>Programando</span>", by: "creada por <b>Franco Sandes</b>", coverT: "Seguiré <em>Programando</em>",
+    aria: "Reproducir Seguiré Programando", hint: "toca para escuchar, tío · 4:39",
+    sung: "🎤 Por ahora la voz canta como en Latinoamérica. ¡Muy pronto la versión de España, tío!",
+    soon: "<b>Todavía no se puede usar, tío.</b> Los likes, dislikes y comentarios se van a activar muy pronto.",
+    login: "Iniciar sesión con Google", comments: "Comentarios", as: "Comentas como", ph: "¿Qué te ha parecido la canción?", send: "Comentar",
+    loginHint: "Inicia sesión con Google para dar like y comentar.", empty: "Aún no hay comentarios. ¡Sé el primero, tío!",
+    foot: "Seguiré Programando · Franco Sandes", title: "Seguiré Programando · Franco Sandes",
+    connect: "No se ha podido conectar: ", vote: "No se ha podido guardar tu voto. Prueba otra vez.", now: "ahora mismo", del: "borrar",
+    delErr: "No se ha podido borrar.", loadErr: "No se han podido cargar los comentarios.", post: "No se ha podido publicar el comentario. Prueba otra vez.",
+    signin: "No se ha podido iniciar sesión. Prueba otra vez.", out: "salir", someone: "Alguien", add: "Añadir ",
+    code: `${K("def")} seguir_programando():
+    ${K("while")} True:
+        escribir_codigo()
+        ${K("if")} error:
+            arreglar(error)   ${S("# error tras error, tio")}
+
+dias = [${S('"lunes"')}, ${S('"martes"')}, ${S('"viernes"')}]  ${S("# informatica, vale!")}
+${K("for")} dia ${K("in")} dias:
+    aguantar(cosa_tras_cosa)
+    seguir_programando()
+
+${K("if")} se_cuelga_el_ordenador():
+    seguir_intentando()
+rendirse = False
+print(${S('"seguire programando, tio"')})` },
+  "en": { flag: "🇺🇸", name: "English", html: "en", video: "video_en.mp4", locale: "en-US",
+    h1: "I'll Keep <span>Programming</span>", by: "made by <b>Franco Sandes</b>", coverT: "I'll Keep <em>Programming</em>",
+    aria: "Play I'll Keep Programming", hint: "tap to listen · 4:39",
+    sung: "🎤 For now the song is sung in Spanish, with English lyrics on screen. The English version is coming soon!",
+    soon: "<b>You can't use this yet.</b> Likes, dislikes and comments will be turned on very soon.",
+    login: "Sign in with Google", comments: "Comments", as: "Commenting as", ph: "What did you think of the song?", send: "Comment",
+    loginHint: "Sign in with Google to like and comment.", empty: "No comments yet. Be the first!",
+    foot: "I'll Keep Programming · Franco Sandes", title: "I'll Keep Programming · Franco Sandes",
+    connect: "Couldn't connect: ", vote: "Couldn't save your vote. Try again.", now: "just now", del: "delete",
+    delErr: "Couldn't delete it.", loadErr: "Couldn't load the comments.", post: "Couldn't post your comment. Try again.",
+    signin: "Couldn't sign in. Try again.", out: "sign out", someone: "Someone", add: "Add ",
+    code: `${K("def")} keep_programming():
+    ${K("while")} True:
+        write_code()
+        ${K("if")} error:
+            fix(error)   ${S("# error after error")}
+
+days = [${S('"monday"')}, ${S('"tuesday"')}, ${S('"friday"')}]  ${S("# computer class!")}
+${K("for")} day ${K("in")} days:
+    endure(thing_after_thing)
+    keep_programming()
+
+${K("if")} computer_freezes():
+    keep_trying()
+give_up = False
+print(${S('"i will keep programming"')})` },
+  "pt": { flag: "🇧🇷", name: "Português", html: "pt-BR", video: "video_pt.mp4", locale: "pt-BR",
+    h1: "Vou Seguir <span>Programando</span>", by: "criada por <b>Franco Sandes</b>", coverT: "Vou Seguir <em>Programando</em>",
+    aria: "Tocar Vou Seguir Programando", hint: "toque para ouvir · 4:39",
+    sung: "🎤 Por enquanto a música é cantada em espanhol, com a letra em português na tela. A versão em português vem aí!",
+    soon: "<b>Ainda não dá para usar.</b> Os likes, dislikes e comentários vão ser ativados muito em breve.",
+    login: "Entrar com o Google", comments: "Comentários", as: "Comentando como", ph: "O que você achou da música?", send: "Comentar",
+    loginHint: "Entre com o Google para curtir e comentar.", empty: "Ainda não há comentários. Seja o primeiro!",
+    foot: "Vou Seguir Programando · Franco Sandes", title: "Vou Seguir Programando · Franco Sandes",
+    connect: "Não foi possível conectar: ", vote: "Não foi possível salvar seu voto. Tente de novo.", now: "agora mesmo", del: "apagar",
+    delErr: "Não foi possível apagar.", loadErr: "Não foi possível carregar os comentários.", post: "Não foi possível publicar o comentário. Tente de novo.",
+    signin: "Não foi possível entrar. Tente de novo.", out: "sair", someone: "Alguém", add: "Adicionar ",
+    code: `${K("def")} seguir_programando():
+    ${K("while")} True:
+        escrever_codigo()
+        ${K("if")} erro:
+            consertar(erro)   ${S("# erro após erro")}
+
+dias = [${S('"segunda"')}, ${S('"terca"')}, ${S('"sexta"')}]  ${S("# informatica!")}
+${K("for")} dia ${K("in")} dias:
+    aguentar(coisa_apos_coisa)
+    seguir_programando()
+
+${K("if")} o_pc_travou():
+    continuar_tentando()
+desistir = False
+print(${S('"vou seguir programando"')})` },
+  "zh": { flag: "🇨🇳", name: "中文（普通话）", html: "zh-CN", video: "video_zh.mp4", locale: "zh-CN",
+    h1: "我会继续<span>编程</span>", by: "创作者：<b>Franco Sandes</b>", coverT: "我会继续<em>编程</em>",
+    aria: "播放 我会继续编程", hint: "点击收听 · 4:39",
+    sung: "🎤 现在这首歌还是用西班牙语唱的，屏幕上有中文歌词和拼音。中文版很快就来！",
+    soon: "<b>现在还不能用。</b> 点赞、点踩和评论很快就会开放。",
+    login: "用 Google 登录", comments: "评论", as: "评论身份：", ph: "你觉得这首歌怎么样？", send: "发表评论",
+    loginHint: "用 Google 登录后就可以点赞和评论。", empty: "还没有评论。来做第一个吧！",
+    foot: "我会继续编程 · Franco Sandes", title: "我会继续编程 · Franco Sandes",
+    connect: "无法连接：", vote: "无法保存你的投票。请再试一次。", now: "刚刚", del: "删除",
+    delErr: "无法删除。", loadErr: "无法加载评论。", post: "无法发表评论。请再试一次。",
+    signin: "无法登录。请再试一次。", out: "退出", someone: "某人", add: "添加 ",
+    code: `${K("def")} 继续编程():
+    ${K("while")} True:
+        写代码()
+        ${K("if")} 错误:
+            修复(错误)   ${S("# 错误接着错误")}
+
+日子 = [${S('"星期一"')}, ${S('"星期二"')}, ${S('"星期五"')}]  ${S("# 电脑课！")}
+${K("for")} 天 ${K("in")} 日子:
+    忍受(一件又一件)
+    继续编程()
+
+${K("if")} 电脑死机():
+    继续尝试()
+放弃 = False
+print(${S('"我会继续编程"')})` },
+  "fr": { flag: "🇫🇷", name: "Français", html: "fr", video: "video_fr.mp4", locale: "fr-FR",
+    h1: "Je continuerai <span>à programmer</span>", by: "créée par <b>Franco Sandes</b>", coverT: "Je continuerai <em>à programmer</em>",
+    aria: "Lire Je continuerai à programmer", hint: "touche pour écouter · 4:39",
+    sung: "🎤 Pour l'instant la chanson est chantée en espagnol, avec les paroles en français à l'écran. La version française arrive bientôt !",
+    soon: "<b>Ce n'est pas encore utilisable.</b> Les j'aime, je n'aime pas et commentaires seront activés très bientôt.",
+    login: "Se connecter avec Google", comments: "Commentaires", as: "Tu commentes en tant que", ph: "Qu'as-tu pensé de la chanson ?", send: "Commenter",
+    loginHint: "Connecte-toi avec Google pour aimer et commenter.", empty: "Pas encore de commentaires. Sois le premier !",
+    foot: "Je continuerai à programmer · Franco Sandes", title: "Je continuerai à programmer · Franco Sandes",
+    connect: "Connexion impossible : ", vote: "Impossible d'enregistrer ton vote. Réessaie.", now: "à l'instant", del: "supprimer",
+    delErr: "Impossible de supprimer.", loadErr: "Impossible de charger les commentaires.", post: "Impossible de publier le commentaire. Réessaie.",
+    signin: "Impossible de se connecter. Réessaie.", out: "se déconnecter", someone: "Quelqu'un", add: "Ajouter ",
+    code: `${K("def")} continuer_a_programmer():
+    ${K("while")} True:
+        ecrire_du_code()
+        ${K("if")} erreur:
+            reparer(erreur)   ${S("# erreur apres erreur")}
+
+jours = [${S('"lundi"')}, ${S('"mardi"')}, ${S('"vendredi"')}]  ${S("# informatique !")}
+${K("for")} jour ${K("in")} jours:
+    supporter(chose_apres_chose)
+    continuer_a_programmer()
+
+${K("if")} mon_ordi_plante():
+    continuer_a_essayer()
+abandonner = False
+print(${S('"je continuerai a programmer"')})` },
+  "it": { flag: "🇮🇹", name: "Italiano", html: "it", video: "video_it.mp4", locale: "it-IT",
+    h1: "Continuerò <span>a programmare</span>", by: "creata da <b>Franco Sandes</b>", coverT: "Continuerò <em>a programmare</em>",
+    aria: "Riproduci Continuerò a programmare", hint: "tocca per ascoltare · 4:39",
+    sung: "🎤 Per ora la canzone è cantata in spagnolo, con il testo in italiano sullo schermo. La versione italiana arriva presto!",
+    soon: "<b>Non si può ancora usare.</b> I mi piace, non mi piace e i commenti saranno attivati molto presto.",
+    login: "Accedi con Google", comments: "Commenti", as: "Commenti come", ph: "Che ne pensi della canzone?", send: "Commenta",
+    loginHint: "Accedi con Google per mettere mi piace e commentare.", empty: "Ancora nessun commento. Sii il primo!",
+    foot: "Continuerò a programmare · Franco Sandes", title: "Continuerò a programmare · Franco Sandes",
+    connect: "Impossibile connettersi: ", vote: "Impossibile salvare il tuo voto. Riprova.", now: "proprio ora", del: "elimina",
+    delErr: "Impossibile eliminare.", loadErr: "Impossibile caricare i commenti.", post: "Impossibile pubblicare il commento. Riprova.",
+    signin: "Impossibile accedere. Riprova.", out: "esci", someone: "Qualcuno", add: "Aggiungi ",
+    code: `${K("def")} continuare_a_programmare():
+    ${K("while")} True:
+        scrivere_codice()
+        ${K("if")} errore:
+            sistemare(errore)   ${S("# errore dopo errore")}
+
+giorni = [${S('"lunedi"')}, ${S('"martedi"')}, ${S('"venerdi"')}]  ${S("# informatica!")}
+${K("for")} giorno ${K("in")} giorni:
+    sopportare(cosa_dopo_cosa)
+    continuare_a_programmare()
+
+${K("if")} si_blocca_il_computer():
+    continuare_a_provare()
+arrendersi = False
+print(${S('"continuero a programmare"')})` },
+  "de": { flag: "🇩🇪", name: "Deutsch", html: "de", video: "video_de.mp4", locale: "de-DE",
+    h1: "Ich werde weiter <span>programmieren</span>", by: "gemacht von <b>Franco Sandes</b>", coverT: "Ich werde weiter <em>programmieren</em>",
+    aria: "Ich werde weiter programmieren abspielen", hint: "tippe zum Anhören · 4:39",
+    sung: "🎤 Im Moment wird das Lied auf Spanisch gesungen, mit deutschem Text auf dem Bildschirm. Die deutsche Version kommt bald!",
+    soon: "<b>Das geht noch nicht.</b> Likes, Dislikes und Kommentare werden sehr bald freigeschaltet.",
+    login: "Mit Google anmelden", comments: "Kommentare", as: "Du kommentierst als", ph: "Wie fandest du das Lied?", send: "Kommentieren",
+    loginHint: "Melde dich mit Google an, um zu liken und zu kommentieren.", empty: "Noch keine Kommentare. Sei der Erste!",
+    foot: "Ich werde weiter programmieren · Franco Sandes", title: "Ich werde weiter programmieren · Franco Sandes",
+    connect: "Verbindung fehlgeschlagen: ", vote: "Deine Stimme konnte nicht gespeichert werden. Versuch es nochmal.", now: "gerade eben", del: "löschen",
+    delErr: "Konnte nicht gelöscht werden.", loadErr: "Die Kommentare konnten nicht geladen werden.", post: "Der Kommentar konnte nicht veröffentlicht werden. Versuch es nochmal.",
+    signin: "Anmeldung fehlgeschlagen. Versuch es nochmal.", out: "abmelden", someone: "Jemand", add: "Hinzufügen: ",
+    code: `${K("def")} weiter_programmieren():
+    ${K("while")} True:
+        code_schreiben()
+        ${K("if")} fehler:
+            reparieren(fehler)   ${S("# Fehler fuer Fehler")}
+
+tage = [${S('"montag"')}, ${S('"dienstag"')}, ${S('"freitag"')}]  ${S("# Informatik!")}
+${K("for")} tag ${K("in")} tage:
+    aushalten(ding_fuer_ding)
+    weiter_programmieren()
+
+${K("if")} computer_stuerzt_ab():
+    weiter_versuchen()
+aufgeben = False
+print(${S('"ich werde weiter programmieren"')})` },
+  "ja": { flag: "🇯🇵", name: "日本語", html: "ja", video: "video_ja.mp4", locale: "ja-JP",
+    h1: "プログラミングを<span>続けるよ</span>", by: "作者：<b>Franco Sandes</b>", coverT: "プログラミングを<em>続けるよ</em>",
+    aria: "プログラミングを続けるよ を再生", hint: "タップして聴く · 4:39",
+    sung: "🎤 今はスペイン語で歌っていて、画面に日本語の歌詞とローマ字が出ます。日本語バージョンはもうすぐ！",
+    soon: "<b>まだ使えません。</b> いいね・よくないね・コメントはもうすぐ使えるようになります。",
+    login: "Google でログイン", comments: "コメント", as: "コメントする名前：", ph: "この歌、どうだった？", send: "コメントする",
+    loginHint: "Google でログインすると、いいねとコメントができます。", empty: "まだコメントがありません。最初の人になろう！",
+    foot: "プログラミングを続けるよ · Franco Sandes", title: "プログラミングを続けるよ · Franco Sandes",
+    connect: "接続できませんでした：", vote: "投票を保存できませんでした。もう一度ためしてね。", now: "たった今", del: "削除",
+    delErr: "削除できませんでした。", loadErr: "コメントを読み込めませんでした。", post: "コメントを投稿できませんでした。もう一度ためしてね。",
+    signin: "ログインできませんでした。もう一度ためしてね。", out: "ログアウト", someone: "だれか", add: "追加 ",
+    code: `${K("def")} プログラミングを続ける():
+    ${K("while")} True:
+        コードを書く()
+        ${K("if")} エラー:
+            直す(エラー)   ${S("# エラーまたエラー")}
+
+曜日 = [${S('"月曜日"')}, ${S('"火曜日"')}, ${S('"金曜日"')}]  ${S("# 情報の授業！")}
+${K("for")} 日 ${K("in")} 曜日:
+    たえる(ひとつずつ)
+    プログラミングを続ける()
+
+${K("if")} パソコンがフリーズ():
+    挑戦し続ける()
+あきらめる = False
+print(${S('"プログラミングを続けるよ"')})` },
+  "ru": { flag: "🇷🇺", name: "Русский", html: "ru", video: "video_ru.mp4", locale: "ru-RU",
+    h1: "Я буду дальше <span>программировать</span>", by: "автор: <b>Franco Sandes</b>", coverT: "Я буду дальше <em>программировать</em>",
+    aria: "Включить Я буду дальше программировать", hint: "нажми, чтобы послушать · 4:39",
+    sung: "🎤 Пока песня поётся на испанском, а на экране — русский текст. Русская версия скоро будет!",
+    soon: "<b>Пока это не работает.</b> Лайки, дизлайки и комментарии скоро включатся.",
+    login: "Войти через Google", comments: "Комментарии", as: "Ты комментируешь как", ph: "Как тебе песня?", send: "Отправить",
+    loginHint: "Войди через Google, чтобы ставить лайки и комментировать.", empty: "Пока нет комментариев. Будь первым!",
+    foot: "Я буду дальше программировать · Franco Sandes", title: "Я буду дальше программировать · Franco Sandes",
+    connect: "Не удалось подключиться: ", vote: "Не удалось сохранить твой голос. Попробуй ещё раз.", now: "только что", del: "удалить",
+    delErr: "Не удалось удалить.", loadErr: "Не удалось загрузить комментарии.", post: "Не удалось опубликовать комментарий. Попробуй ещё раз.",
+    signin: "Не удалось войти. Попробуй ещё раз.", out: "выйти", someone: "Кто-то", add: "Добавить ",
+    code: `${K("def")} программировать_дальше():
+    ${K("while")} True:
+        писать_код()
+        ${K("if")} ошибка:
+            исправить(ошибка)   ${S("# ошибка за ошибкой")}
+
+дни = [${S('"понедельник"')}, ${S('"вторник"')}, ${S('"пятница"')}]  ${S("# информатика!")}
+${K("for")} день ${K("in")} дни:
+    терпеть(одно_за_другим)
+    программировать_дальше()
+
+${K("if")} комп_завис():
+    пробовать_дальше()
+сдаться = False
+print(${S('"я буду дальше программировать"')})` },
+  "hi": { flag: "🇮🇳", name: "हिन्दी", html: "hi", video: "video_hi.mp4", locale: "hi-IN",
+    h1: "मैं प्रोग्रामिंग <span>करता रहूँगा</span>", by: "रचनाकार: <b>Franco Sandes</b>", coverT: "मैं प्रोग्रामिंग <em>करता रहूँगा</em>",
+    aria: "मैं प्रोग्रामिंग करता रहूँगा चलाएँ", hint: "सुनने के लिए दबाओ · 4:39",
+    sung: "🎤 अभी गाना स्पैनिश में गाया गया है, स्क्रीन पर हिन्दी बोल हैं। हिन्दी वर्ज़न जल्द आ रहा है!",
+    soon: "<b>अभी इस्तेमाल नहीं कर सकते।</b> लाइक, डिसलाइक और कमेंट बहुत जल्द चालू होंगे।",
+    login: "Google से लॉग इन करें", comments: "कमेंट", as: "तुम कमेंट कर रहे हो:", ph: "तुम्हें गाना कैसा लगा?", send: "कमेंट करो",
+    loginHint: "लाइक और कमेंट करने के लिए Google से लॉग इन करो।", empty: "अभी कोई कमेंट नहीं है। पहले बनो!",
+    foot: "मैं प्रोग्रामिंग करता रहूँगा · Franco Sandes", title: "मैं प्रोग्रामिंग करता रहूँगा · Franco Sandes",
+    connect: "कनेक्ट नहीं हो सका: ", vote: "तुम्हारा वोट सेव नहीं हुआ। फिर से कोशिश करो।", now: "अभी-अभी", del: "मिटाओ",
+    delErr: "मिटा नहीं सके।", loadErr: "कमेंट लोड नहीं हुए।", post: "कमेंट पोस्ट नहीं हुआ। फिर से कोशिश करो।",
+    signin: "लॉग इन नहीं हुआ। फिर से कोशिश करो।", out: "लॉग आउट", someone: "कोई", add: "जोड़ो ",
+    code: `${K("def")} प्रोग्रामिंग_करते_रहो():
+    ${K("while")} True:
+        कोड_लिखो()
+        ${K("if")} एरर:
+            ठीक_करो(एरर)   ${S("# एरर पे एरर")}
+
+दिन = [${S('"सोमवार"')}, ${S('"मंगलवार"')}, ${S('"शुक्रवार"')}]  ${S("# कंप्यूटर क्लास!")}
+${K("for")} द ${K("in")} दिन:
+    सहो(एक_के_बाद_एक)
+    प्रोग्रामिंग_करते_रहो()
+
+${K("if")} कंप्यूटर_अटका():
+    कोशिश_करते_रहो()
+हार_मानो = False
+print(${S('"मैं प्रोग्रामिंग करता रहूँगा"')})` },
+  "ar": { flag: "🇸🇦", name: "العربية", html: "ar", dir: "rtl", video: "video_ar.mp4", locale: "ar",
+    h1: "سأستمر <span>في البرمجة</span>", by: "من تأليف <b>Franco Sandes</b>", coverT: "سأستمر <em>في البرمجة</em>",
+    aria: "تشغيل سأستمر في البرمجة", hint: "اضغط للاستماع · 4:39",
+    sung: "🎤 حاليًا الأغنية مغنّاة بالإسبانية، والكلمات العربية على الشاشة. النسخة العربية قريبًا!",
+    soon: "<b>لا يمكن استخدام هذا بعد.</b> الإعجابات وعدم الإعجاب والتعليقات ستُفعَّل قريبًا جدًا.",
+    login: "تسجيل الدخول عبر Google", comments: "التعليقات", as: "تعلّق باسم", ph: "ما رأيك في الأغنية؟", send: "علّق",
+    loginHint: "سجّل الدخول عبر Google لتعجب وتعلّق.", empty: "لا توجد تعليقات بعد. كن الأول!",
+    foot: "سأستمر في البرمجة · Franco Sandes", title: "سأستمر في البرمجة · Franco Sandes",
+    connect: "تعذّر الاتصال: ", vote: "تعذّر حفظ صوتك. حاول مرة أخرى.", now: "الآن", del: "حذف",
+    delErr: "تعذّر الحذف.", loadErr: "تعذّر تحميل التعليقات.", post: "تعذّر نشر التعليق. حاول مرة أخرى.",
+    signin: "تعذّر تسجيل الدخول. حاول مرة أخرى.", out: "خروج", someone: "شخص ما", add: "أضف ",
+    code: `${K("def")} استمر_بالبرمجة():
+    ${K("while")} True:
+        اكتب_كود()
+        ${K("if")} خطأ:
+            أصلح(خطأ)   ${S("# خطأ بعد خطأ")}
+
+الأيام = [${S('"الاثنين"')}, ${S('"الثلاثاء"')}, ${S('"الجمعة"')}]  ${S("# معلوماتية!")}
+${K("for")} يوم ${K("in")} الأيام:
+    تحمّل(شيء_بعد_شيء)
+    استمر_بالبرمجة()
+
+${K("if")} علّق_الكمبيوتر():
+    استمر_بالمحاولة()
+استسلام = False
+print(${S('"سأستمر في البرمجة"')})` },
+  "bn": { flag: "🇧🇩", name: "বাংলা", html: "bn", video: "video_bn.mp4", locale: "bn-BD",
+    h1: "আমি প্রোগ্রামিং <span>চালিয়ে যাব</span>", by: "স্রষ্টা: <b>Franco Sandes</b>", coverT: "আমি প্রোগ্রামিং <em>চালিয়ে যাব</em>",
+    aria: "আমি প্রোগ্রামিং চালিয়ে যাব চালাও", hint: "শুনতে চাপ দাও · 4:39",
+    sung: "🎤 এখন গানটা স্প্যানিশে গাওয়া, পর্দায় বাংলা লিরিক্স আছে। বাংলা ভার্সন শিগগিরই আসছে!",
+    soon: "<b>এখনো ব্যবহার করা যাবে না।</b> লাইক, ডিসলাইক আর কমেন্ট খুব শিগগিরই চালু হবে।",
+    login: "Google দিয়ে লগ ইন", comments: "কমেন্ট", as: "তুমি কমেন্ট করছ:", ph: "গানটা কেমন লাগল?", send: "কমেন্ট করো",
+    loginHint: "লাইক আর কমেন্ট করতে Google দিয়ে লগ ইন করো।", empty: "এখনো কোনো কমেন্ট নেই। প্রথম হও!",
+    foot: "আমি প্রোগ্রামিং চালিয়ে যাব · Franco Sandes", title: "আমি প্রোগ্রামিং চালিয়ে যাব · Franco Sandes",
+    connect: "কানেক্ট করা গেল না: ", vote: "তোমার ভোট সেভ হয়নি। আবার চেষ্টা করো।", now: "এইমাত্র", del: "মুছে ফেলো",
+    delErr: "মোছা গেল না।", loadErr: "কমেন্ট লোড হয়নি।", post: "কমেন্ট পোস্ট হয়নি। আবার চেষ্টা করো।",
+    signin: "লগ ইন হয়নি। আবার চেষ্টা করো।", out: "লগ আউট", someone: "কেউ", add: "যোগ করো ",
+    code: `${K("def")} প্রোগ্রামিং_চালাও():
+    ${K("while")} True:
+        কোড_লেখো()
+        ${K("if")} ভুল:
+            ঠিক_করো(ভুল)   ${S("# ভুলের পর ভুল")}
+
+দিন = [${S('"সোমবার"')}, ${S('"মঙ্গলবার"')}, ${S('"শুক্রবার"')}]  ${S("# কম্পিউটার ক্লাস!")}
+${K("for")} দ ${K("in")} দিন:
+    সহ্য_করো(একটার_পর_একটা)
+    প্রোগ্রামিং_চালাও()
+
+${K("if")} কম্পিউটার_আটকালে():
+    চেষ্টা_চালাও()
+হার_মানা = False
+print(${S('"আমি প্রোগ্রামিং চালিয়ে যাব"')})` },
+  "id": { flag: "🇮🇩", name: "Bahasa Indonesia", html: "id", video: "video_id.mp4", locale: "id-ID",
+    h1: "Aku Akan Terus <span>Programming</span>", by: "dibuat oleh <b>Franco Sandes</b>", coverT: "Aku Akan Terus <em>Programming</em>",
+    aria: "Putar Aku Akan Terus Programming", hint: "ketuk untuk mendengar · 4:39",
+    sung: "🎤 Untuk sekarang lagunya dinyanyikan dalam bahasa Spanyol, dengan lirik bahasa Indonesia di layar. Versi Indonesia segera hadir!",
+    soon: "<b>Belum bisa dipakai.</b> Suka, tidak suka, dan komentar akan segera diaktifkan.",
+    login: "Masuk dengan Google", comments: "Komentar", as: "Berkomentar sebagai", ph: "Gimana menurutmu lagunya?", send: "Kirim",
+    loginHint: "Masuk dengan Google untuk menyukai dan berkomentar.", empty: "Belum ada komentar. Jadilah yang pertama!",
+    foot: "Aku Akan Terus Programming · Franco Sandes", title: "Aku Akan Terus Programming · Franco Sandes",
+    connect: "Tidak bisa terhubung: ", vote: "Suaramu tidak tersimpan. Coba lagi.", now: "baru saja", del: "hapus",
+    delErr: "Tidak bisa menghapus.", loadErr: "Komentar tidak bisa dimuat.", post: "Komentar tidak bisa dikirim. Coba lagi.",
+    signin: "Tidak bisa masuk. Coba lagi.", out: "keluar", someone: "Seseorang", add: "Tambah ",
+    code: `${K("def")} terus_programming():
+    ${K("while")} True:
+        tulis_kode()
+        ${K("if")} error:
+            perbaiki(error)   ${S("# error demi error")}
+
+hari = [${S('"senin"')}, ${S('"selasa"')}, ${S('"jumat"')}]  ${S("# informatika!")}
+${K("for")} h ${K("in")} hari:
+    tahan(satu_demi_satu)
+    terus_programming()
+
+${K("if")} komputer_nge_hang():
+    terus_mencoba()
+menyerah = False
+print(${S('"aku akan terus programming"')})` },
+  "ur": { flag: "🇵🇰", name: "اردو", html: "ur", dir: "rtl", video: "video_ur.mp4", locale: "ur-PK",
+    h1: "میں پروگرامنگ <span>کرتا رہوں گا</span>", by: "تخلیق: <b>Franco Sandes</b>", coverT: "میں پروگرامنگ <em>کرتا رہوں گا</em>",
+    aria: "میں پروگرامنگ کرتا رہوں گا چلائیں", hint: "سننے کے لیے دبائیں · 4:39",
+    sung: "🎤 ابھی گانا ہسپانوی میں گایا گیا ہے، اسکرین پر اردو بول ہیں۔ اردو ورژن جلد آ رہا ہے!",
+    soon: "<b>ابھی استعمال نہیں ہو سکتا۔</b> لائک، ڈس لائک اور کمنٹس بہت جلد شروع ہوں گے۔",
+    login: "Google سے لاگ ان کریں", comments: "کمنٹس", as: "آپ کمنٹ کر رہے ہیں بطور", ph: "آپ کو گانا کیسا لگا؟", send: "کمنٹ کریں",
+    loginHint: "لائک اور کمنٹ کرنے کے لیے Google سے لاگ ان کریں۔", empty: "ابھی کوئی کمنٹ نہیں۔ پہلے بنیں!",
+    foot: "میں پروگرامنگ کرتا رہوں گا · Franco Sandes", title: "میں پروگرامنگ کرتا رہوں گا · Franco Sandes",
+    connect: "کنیکٹ نہیں ہو سکا: ", vote: "آپ کا ووٹ محفوظ نہیں ہوا۔ دوبارہ کوشش کریں۔", now: "ابھی ابھی", del: "مٹائیں",
+    delErr: "مٹا نہیں سکے۔", loadErr: "کمنٹس لوڈ نہیں ہوئے۔", post: "کمنٹ پوسٹ نہیں ہوا۔ دوبارہ کوشش کریں۔",
+    signin: "لاگ ان نہیں ہوا۔ دوبارہ کوشش کریں۔", out: "لاگ آؤٹ", someone: "کوئی", add: "شامل کریں ",
+    code: `${K("def")} پروگرامنگ_جاری_رکھو():
+    ${K("while")} True:
+        کوڈ_لکھو()
+        ${K("if")} ایرر:
+            ٹھیک_کرو(ایرر)   ${S("# ایرر پہ ایرر")}
+
+دن = [${S('"پیر"')}, ${S('"منگل"')}, ${S('"جمعہ"')}]  ${S("# کمپیوٹر کلاس!")}
+${K("for")} د ${K("in")} دن:
+    سہو(ایک_کے_بعد_ایک)
+    پروگرامنگ_جاری_رکھو()
+
+${K("if")} کمپیوٹر_اٹکا():
+    کوشش_جاری_رکھو()
+ہار_ماننا = False
+print(${S('"میں پروگرامنگ کرتا رہوں گا"')})` },
+};
+const ORDER = ["es", "es-ES", "en", "pt", "fr", "it", "de", "ru", "id", "hi", "bn", "ur", "ar", "ja", "zh"];
+let LANG = "es";
+try { const saved = localStorage.getItem("idioma"); if (LANGS[saved]) LANG = saved; } catch (e) {}
+const T = k => LANGS[LANG][k];
+
+function applyLang(code, fromUser) {
+  LANG = code; const L = LANGS[code];
+  try { localStorage.setItem("idioma", code); } catch (e) {}
+  document.documentElement.lang = L.html; document.documentElement.dir = L.dir || "ltr"; document.title = L.title;
+  $("langFlag").textContent = L.flag; $("langName").textContent = L.name;
+  $("h1").innerHTML = L.h1; $("by").innerHTML = L.by; $("coverT").innerHTML = L.coverT; $("code").innerHTML = L.code;
+  $("cover").setAttribute("aria-label", L.aria); $("hint").textContent = L.hint;
+  $("sung").textContent = L.sung; $("sung").hidden = !L.sung;
+  $("soon").innerHTML = L.soon; $("loginTxt").textContent = L.login; $("chTxt").textContent = L.comments;
+  $("asTxt").textContent = L.as; $("text").placeholder = L.ph; $("sendBtn").textContent = L.send;
+  $("loginHint").textContent = L.loginHint; $("foot").textContent = L.foot;
+  const e = $("emptyLi"); if (e) e.textContent = L.empty;
+  document.querySelectorAll("#emojis button").forEach(b => b.setAttribute("aria-label", L.add + b.textContent));
+  document.querySelectorAll("#who .btn.google").forEach(b => { if (!b.querySelector("svg")) b.textContent = L.login; });
+  const v = $("vid");
+  if (!v.src.endsWith("/" + L.video)) {
+    const t = v.currentTime, playing = !v.paused && !v.hidden;
+    v.src = L.video;
+    if (t) v.addEventListener("loadedmetadata", () => { v.currentTime = t; if (playing) v.play().catch(() => {}); }, { once: true });
+  }
+  document.querySelectorAll("#langMenu button").forEach(b => b.setAttribute("aria-checked", b.dataset.lang === code));
+  if (fromUser) { $("langMenu").hidden = true; $("langBtn").setAttribute("aria-expanded", "false"); $("langBtn").focus(); }
+}
+for (const code of ORDER) {
+  const L = LANGS[code], b = document.createElement("button");
+  b.type = "button"; b.setAttribute("role", "menuitemradio"); b.dataset.lang = code;
+  b.innerHTML = `<span class="fl">${L.flag}</span><span>${L.name}</span><span class="ck">✓</span>`;
+  b.onclick = () => applyLang(code, true);
+  $("langMenu").appendChild(b);
+}
+$("langBtn").onclick = () => { const m = $("langMenu"); m.hidden = !m.hidden; $("langBtn").setAttribute("aria-expanded", String(!m.hidden)); if (!m.hidden) m.querySelector('[aria-checked="true"]')?.focus(); };
+document.addEventListener("click", e => { if (!e.target.closest(".langs")) { $("langMenu").hidden = true; $("langBtn").setAttribute("aria-expanded", "false"); } });
+document.addEventListener("keydown", e => { if (e.key === "Escape" && !$("langMenu").hidden) { $("langMenu").hidden = true; $("langBtn").setAttribute("aria-expanded", "false"); $("langBtn").focus(); } });
+// =========================
 
 // Portada -> video
 $("cover").addEventListener("click", () => {
@@ -196,13 +652,15 @@ for (const e of EM) {
   $("emojis").appendChild(b);
 }
 
+applyLang(LANG, false);
+
 const status = (msg, err) => { $("status").textContent = msg || ""; $("status").className = "note" + (err ? " err" : ""); };
 
 if (firebaseConfig.apiKey === "PEGAR_AQUI") {
   
   $("likeBtn").disabled = $("dislikeBtn").disabled = $("loginBtn").disabled = true;
 } else {
-  start().catch(e => status("No se pudo conectar: " + e.message, true));
+  start().catch(e => status(T("connect") + e.message, true));
 }
 
 async function start() {
@@ -230,8 +688,8 @@ async function start() {
     const ref = F.doc(db, "votes", me.uid);
     try {
       if (myVote === v) await F.deleteDoc(ref);
-      else await F.setDoc(ref, { v, name: me.displayName || "Alguien", ts: F.serverTimestamp() });
-    } catch (e) { status("No se pudo guardar tu voto. Probá de nuevo.", true); }
+      else await F.setDoc(ref, { v, name: me.displayName || T("someone"), ts: F.serverTimestamp() });
+    } catch (e) { status(T("vote"), true); }
   }
   $("likeBtn").onclick = () => vote(1);
   $("dislikeBtn").onclick = () => vote(-1);
@@ -241,7 +699,7 @@ async function start() {
   F.onSnapshot(q, snap => {
     const ul = $("list"); ul.innerHTML = "";
     $("ccount").textContent = snap.size ? "· " + snap.size : "";
-    if (snap.empty) { const li = document.createElement("li"); li.className = "empty"; li.textContent = "Todavía no hay comentarios. ¡Sé el primero!"; ul.appendChild(li); return; }
+    if (snap.empty) { const li = document.createElement("li"); li.className = "empty"; li.textContent = T("empty"); ul.appendChild(li); return; }
     snap.forEach(d => {
       const c = d.data(); const li = document.createElement("li"); li.className = "c";
       let av;
@@ -249,22 +707,22 @@ async function start() {
       else { av = document.createElement("div"); av.className = "av"; av.textContent = (c.name || "?")[0].toUpperCase(); }
       const body = document.createElement("div");
       const meta = document.createElement("div"); meta.className = "meta";
-      const n = document.createElement("b"); n.textContent = c.name || "Alguien"; meta.appendChild(n);
-      const when = document.createElement("span"); when.textContent = c.ts ? c.ts.toDate().toLocaleString("es-AR", { dateStyle: "short", timeStyle: "short" }) : "recién"; meta.appendChild(when);
-      if (me && c.uid === me.uid) { const del = document.createElement("button"); del.className = "link"; del.textContent = "borrar"; del.onclick = () => F.deleteDoc(F.doc(db, "comments", d.id)).catch(() => status("No se pudo borrar.", true)); meta.appendChild(del); }
+      const n = document.createElement("b"); n.textContent = c.name || T("someone"); meta.appendChild(n);
+      const when = document.createElement("span"); when.textContent = c.ts ? c.ts.toDate().toLocaleString(T("locale"), { dateStyle: "short", timeStyle: "short" }) : T("now"); meta.appendChild(when);
+      if (me && c.uid === me.uid) { const del = document.createElement("button"); del.className = "link"; del.textContent = T("del"); del.onclick = () => F.deleteDoc(F.doc(db, "comments", d.id)).catch(() => status(T("delErr"), true)); meta.appendChild(del); }
       const p = document.createElement("p"); p.textContent = c.text;
       body.append(meta, p); li.append(av, body); ul.appendChild(li);
     });
-  }, () => status("No se pudieron cargar los comentarios.", true));
+  }, () => status(T("loadErr"), true));
 
   $("form").addEventListener("submit", async e => {
     e.preventDefault();
     const text = $("text").value.trim(); if (!text || !me) return;
     $("sendBtn").disabled = true;
     try {
-      await F.addDoc(F.collection(db, "comments"), { uid: me.uid, name: me.displayName || "Alguien", photo: me.photoURL || "", text, ts: F.serverTimestamp() });
+      await F.addDoc(F.collection(db, "comments"), { uid: me.uid, name: me.displayName || T("someone"), photo: me.photoURL || "", text, ts: F.serverTimestamp() });
       $("text").value = ""; status("");
-    } catch (err) { status("No se pudo publicar el comentario. Probá de nuevo.", true); }
+    } catch (err) { status(T("post"), true); }
     $("sendBtn").disabled = false;
   });
 
@@ -272,7 +730,7 @@ async function start() {
   const provider = new A.GoogleAuthProvider();
   async function login() {
     try { await A.signInWithPopup(auth, provider); }
-    catch (e) { if (e.code !== "auth/popup-closed-by-user") status("No se pudo iniciar sesión. Probá de nuevo.", true); }
+    catch (e) { if (e.code !== "auth/popup-closed-by-user") status(T("signin"), true); }
   }
   A.onAuthStateChanged(auth, u => {
     me = u; const who = $("who");
@@ -280,7 +738,7 @@ async function start() {
       who.innerHTML = "";
       if (u.photoURL) { const i = document.createElement("img"); i.src = u.photoURL; i.alt = ""; i.referrerPolicy = "no-referrer"; who.appendChild(i); }
       const n = document.createElement("span"); n.textContent = u.displayName || u.email; who.appendChild(n);
-      const out = document.createElement("button"); out.className = "link"; out.textContent = "salir"; out.onclick = () => A.signOut(auth); who.appendChild(out);
+      const out = document.createElement("button"); out.className = "link"; out.textContent = T("out"); out.onclick = () => A.signOut(auth); who.appendChild(out);
       $("form").hidden = false; $("loginHint").hidden = true; $("meName").textContent = u.displayName || u.email;
     } else {
       who.innerHTML = ""; const b = $("loginBtnTpl") || null;
@@ -290,7 +748,7 @@ async function start() {
     paintVote();
   });
   function loginButton() {
-    const b = document.createElement("button"); b.className = "btn google"; b.textContent = "Iniciar sesión con Google"; b.onclick = login; return b;
+    const b = document.createElement("button"); b.className = "btn google"; b.textContent = T("login"); b.onclick = login; return b;
   }
   $("loginBtn").onclick = login;
 }
