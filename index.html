@@ -100,7 +100,9 @@
   .langmenu button{display:flex;align-items:center;gap:10px;width:100%;text-align:left;background:none;border:0;color:var(--fg);font:600 16px var(--display);padding:10px 12px;border-radius:10px;cursor:pointer}
   .langmenu button:hover,.langmenu button:focus-visible{background:#1b2538;outline:none}
   .langmenu button[aria-checked="true"]{background:rgba(255,222,60,.12)}
-  .langmenu .fl{font-size:22px}
+  .langmenu .fl{display:inline-flex}
+  .flg{width:28px;height:21px;border-radius:4px;display:block;box-shadow:0 0 0 1px rgba(255,255,255,.15);object-fit:cover}
+  #langFlag{display:inline-flex}
   .langmenu button span:nth-child(2){white-space:nowrap}
   .langmenu .ck{margin-left:auto;color:var(--yellow);font-size:20px;font-weight:800;visibility:hidden}
   .langmenu button[aria-checked="true"] .ck{visibility:visible}
@@ -121,7 +123,7 @@
     </div>
     <div class="headr">
       <div class="langs">
-        <button class="langbtn" id="langBtn" aria-haspopup="menu" aria-expanded="false"><span id="langFlag">🇦🇷</span> <span id="langName">Español (Latinoamérica)</span> ▾</button>
+        <button class="langbtn" id="langBtn" aria-haspopup="menu" aria-expanded="false"><span id="langFlag"><img class="flg" src="flags/ar.svg" alt="" width="28" height="21"></span> <span id="langName">Español (Latinoamérica)</span> ▾</button>
         <div class="langmenu" id="langMenu" role="menu" hidden></div>
       </div>
       <div class="by" id="by">creada por <b>Franco Sandes</b></div>
@@ -598,6 +600,8 @@ ${K("if")} کمپیوٹر_اٹکا():
 ہار_ماننا = False
 print(${S('"میں پروگرامنگ کرتا رہوں گا"')})` },
 };
+const FLAG = { "es": "ar", "es-ES": "es", "en": "us", "pt": "br", "fr": "fr", "it": "it", "de": "de", "ru": "ru", "id": "id", "hi": "in", "bn": "bd", "ur": "pk", "ar": "sa", "ja": "jp", "zh": "cn" };
+const flagImg = c => `<img class="flg" src="flags/${FLAG[c]}.svg" alt="" width="28" height="21">`;
 const ORDER = ["es", "es-ES", "en", "pt", "fr", "it", "de", "ru", "id", "hi", "bn", "ur", "ar", "ja", "zh"];
 let LANG = "es";
 try { const saved = localStorage.getItem("idioma"); if (LANGS[saved]) LANG = saved; } catch (e) {}
@@ -607,7 +611,7 @@ function applyLang(code, fromUser) {
   LANG = code; const L = LANGS[code];
   try { localStorage.setItem("idioma", code); } catch (e) {}
   document.documentElement.lang = L.html; document.documentElement.dir = L.dir || "ltr"; document.title = L.title;
-  $("langFlag").textContent = L.flag; $("langName").textContent = L.name;
+  $("langFlag").innerHTML = flagImg(code); $("langName").textContent = L.name;
   $("h1").innerHTML = L.h1; $("by").innerHTML = L.by; $("coverT").innerHTML = L.coverT; $("code").innerHTML = L.code;
   $("cover").setAttribute("aria-label", L.aria); $("hint").textContent = L.hint;
   $("sung").textContent = L.sung; $("sung").hidden = !L.sung;
@@ -629,7 +633,7 @@ function applyLang(code, fromUser) {
 for (const code of ORDER) {
   const L = LANGS[code], b = document.createElement("button");
   b.type = "button"; b.setAttribute("role", "menuitemradio"); b.dataset.lang = code;
-  b.innerHTML = `<span class="fl">${L.flag}</span><span>${L.name}</span><span class="ck">✓</span>`;
+  b.innerHTML = `<span class="fl">${flagImg(code)}</span><span>${L.name}</span><span class="ck">✓</span>`;
   b.onclick = () => applyLang(code, true);
   $("langMenu").appendChild(b);
 }
